@@ -11,7 +11,7 @@ import static io.cucumber.junit.CucumberOptions.SnippetType.CAMELCASE;
         features = "src/test/resources/features",
 
         glue = {"classpath:com.kavinschool.examples.steps",
-                "classpath:com.kavinschool.web.hooks"},
+                "classpath:com.kavinschool.examples.hooks"},
 
         plugin = {
                 "pretty",
