@@ -123,18 +123,17 @@ public class DemoInputsStepDefs {
 		// Approach 3
 		course.selectByVisibleText("NodeJS");
 	}
-	
+
 	@When("I click radio button with value {string}")
 	public void i_click_radio_button(String value) {
 		String locator = String.format("//input[@value='%s']", value);
-	    driver.findElement(By.xpath(locator)).click();
+		driver.findElement(By.xpath(locator)).click();
 	}
 
 	@When("I click checkbox with value {string}")
 	public void i_click_checkbox(String value) {
 		String locator = String.format("//input[@value='%s']", value);
-	    driver.findElement(By.xpath(locator)).click();
+		driver.findElement(By.xpath(locator)).click();
 	}
-
 
 }

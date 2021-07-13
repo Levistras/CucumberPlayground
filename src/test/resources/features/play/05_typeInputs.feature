@@ -6,5 +6,5 @@ Feature: Clear and Enter Text
   Scenario: Clearing Text Field and entering text
     Given I go to "https://kavinschool.com/playground/DemoInputs.html"
     When I enter firstName "Kangeyan"
-    And I enter lastName "Passoubady"
-    And I enter email "kangs@kavinschool.com"
+    * I enter lastName "Passoubady"
+    * I enter email "kangs@kavinschool.com"

@@ -4,5 +4,5 @@ Feature: Getting Title
     Get website title
 
   Scenario: Fetching Website Title
-    When I go to "https://kavinschool.com/playground/DemoInputs.html"
+    Given I go to "https://kavinschool.com/playground/DemoInputs.html"
     Then Title should be "Kavin School-Input Elements"

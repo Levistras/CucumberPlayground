@@ -4,5 +4,5 @@ Feature: Getting URL
     Get website Url
 
   Scenario: Fetching Website URL
-    When I go to "https://kavinschool.com/playground/DemoInputs.html"
+    Given I go to "https://kavinschool.com/playground/DemoInputs.html"
     Then URL should be "https://kavinschool.com/playground/DemoInputs.html"

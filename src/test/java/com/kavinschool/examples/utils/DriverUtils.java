@@ -1,3 +1,7 @@
+/*
+ * Kangeyan Passoubady
+ * Version 1.0
+ */
 package com.kavinschool.examples.utils;
 
 import java.io.File;
@@ -47,103 +51,8 @@ public class DriverUtils {
 		this.browserType = browserType;
 	}
 
-	public static void delay(long ms) {
-		try {
-			Thread.sleep(ms);
-		} catch (InterruptedException ex) {
-			log.warn(ex.getMessage());
-		}
-	}
-
-	public DriverUtils setBrowserType(String browserType) {
-		this.browserType = browserType;
-		return this;
-	}
-
-	public WebDriver getDriver() {
-		return driver;
-	}
-
-	public DriverUtils setDriver(WebDriver driver) {
-		this.driver = driver;
-		return this;
-	}
-
-	public String getBrowserType() {
-		return browserType;
-	}
-
-	/**
-	 * Save screen shot to byte [ ].
-	 *
-	 * @param screenShotFileName the screen shotfile name
-	 * @return the byte [ ]
-	 */
-	public byte[] saveScreenShotTo(String screenShotFileName) {
-		log.info("saveScreenShotTo({})",screenShotFileName);
-		if (browserType.equalsIgnoreCase("htmlunit"))
-			return new byte[0];
-		try {
-			return writeScreenShot(screenShotFileName);
-		} catch (Exception ex) {
-			log.warn(ex.getMessage());
-		}
-		return new byte[0];
-	}
-
-	private byte[] writeScreenShot(String screenShotFileName) throws IOException {
-		System.out.println("writeScreenShot: " + screenShotFileName);
-		File tempScrShotFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-		FileUtils.copyFile(tempScrShotFile, new File(screenShotFileName));
-		return ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
-	}
-
-	/**
-	 * Gets screen shot file name.
-	 *
-	 * @param className  the class name
-	 * @param methodName the method name
-	 * @return the screen shot file name
-	 */
-// This method creates a file name with the following format
-	// ScreenShot/Date/time_classname_testname.png
-	// ScreenShot is a folder
-	// Date is a folder
-	// time_classname_testname.png is a file
-	// Date format is yyyyMMdd
-	// time format is HHmmssSSS
-	// className and methodName special characters ".][" are replaced with "_"
-	public String getScreenShotFileName(String className, String methodName) {
-		DateFormat dateFormat2 = new SimpleDateFormat("yyyyMMdd");
-		DateFormat dateFormat1 = new SimpleDateFormat("HHmmssSSS");
-		String now = dateFormat1.format(new Date());
-		String today = dateFormat2.format(new Date());
-		String fileName;
-		System.out.println("Method Name:" + methodName);
-		System.out.println("Class Name:" + className);
-		if (methodName != null && className != null)
-			fileName = className + "." + methodName;
-		else if (className != null)
-			fileName = className;
-		else
-			fileName = methodName;
-		fileName = "target/Screenshots/" + today + "/" + now + '_' + browserType + '_'
-				+ fileName.replaceAll("[.\\[\\]]", "_") + ".png";
-		System.out.println("name:" + fileName);
-		return fileName;
-	}
-
-	public String getScreenShotFileName(String methodName) {
-		return getScreenShotFileName("", methodName);
-	}
-
 	public void clickAt(By by, int xOffset, int yOffset) {
 		WebElement element = driver.findElement(by);
-		Actions builder = new Actions(driver);
-		builder.moveToElement(element, xOffset, yOffset).click().build().perform();
-	}
-
-	public void clickAt(WebElement element, int xOffset, int yOffset) {
 		Actions builder = new Actions(driver);
 		builder.moveToElement(element, xOffset, yOffset).click().build().perform();
 	}
@@ -153,102 +62,37 @@ public class DriverUtils {
 		builder.moveToElement(element, 5, 5).click().build().perform();
 	}
 
-	/**
-	 * Scroll into view.
-	 *
-	 * @param byMethod the byMethod
-	 */
-	public void scrollIntoView(final By byMethod) {
-		final WebElement element = driver.findElement(byMethod);
-		((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", element);
-		delay(500);
-	}
-
-	public void scrollIntoView(final WebElement element) {
-		((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", element);
-		delay(500);
-	}
-
-	public void moveToElement(final WebElement element) {
-		try {
-			Actions actions = new Actions(driver);
-			actions.moveToElement(element).build().perform();
-			delay(500);
-		} catch (MoveTargetOutOfBoundsException ex) {
-			log.warn(ex.getMessage());
-			log.error("Moving out of bound");
-		}
+	public void clickAt(WebElement element, int xOffset, int yOffset) {
+		Actions builder = new Actions(driver);
+		builder.moveToElement(element, xOffset, yOffset).click().build().perform();
 	}
 
 	/**
-	 * Scroll into view. viewStatus - accepted values : true, false
-	 *
-	 * @param element    the element
-	 * @param viewStatus the view status
-	 */
-	public void scrollIntoView(final WebElement element, final String viewStatus) {
-		((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(" + viewStatus + ");", element);
-		delay(500);
-	}
+     * Close alert and get its text.
+     *
+     * @param acceptNextAlert the accept next alert
+     * @return the string
+     */
+    public String closeAlertAndGetItsText(final boolean acceptNextAlert) {
+        try {
+            final Alert alert = driver.switchTo().alert();
+            final String alertText = alert.getText();
+            if (acceptNextAlert) {
+                alert.accept();
+            } else {
+                alert.dismiss();
+            }
+            return alertText;
+        } catch (final Exception ex) {
+            log.warn("Alert Not found!!!");
+            return null;
+        }
+    }
 
-	/**
-	 * Scroll to page top.
-	 */
-	public void scrollToPageTop() {
-		final JavascriptExecutor js = (JavascriptExecutor) driver;
-		js.executeScript("window.scrollTo(0, 0);");
-		delay(1000);
-	}
-
-	/**
-	 * Scroll down.
-	 *
-	 * @param pixelToScroll the pixel to scroll
-	 */
-	public void scrollDown(final int pixelToScroll) {
-		final int detPixelToScroll = pixelToScroll == 0 ? 250 : pixelToScroll;
-		final JavascriptExecutor jsExec = (JavascriptExecutor) driver;
-		jsExec.executeScript("scrollBy(0, " + detPixelToScroll + ");");
-		delay(1000);
-	}
-
-	/**
-	 * Scroll Horizontal Left Direction.
-	 */
-	public void scrollHorizontalLeft() {
-		final int pixelToScroll = -2000;
-		final JavascriptExecutor jsExec = (JavascriptExecutor) driver;
-		jsExec.executeScript("scroll(" + pixelToScroll + ", 0);");
-	}
-
-	/**
-	 * Scroll Horizontal Right Direction.
-	 */
-	public void scrollHorizontalRight() {
-		final int pixelToScroll = 2000;
-		final JavascriptExecutor jsExec = (JavascriptExecutor) driver;
-		jsExec.executeScript("scroll(" + pixelToScroll + ", 0);");
-	}
-
-	/**
-	 * Scroll to bottom of page.
-	 */
-	public void scrollToBottomOfPage() {
-		final JavascriptExecutor jsExec = (JavascriptExecutor) driver;
-		jsExec.executeScript("window.scrollTo(0, document.body.scrollHeight);");
-	}
-
-	/**
-	 * Scroll up.
-	 *
-	 * @param driver        the driver
-	 * @param pixelToScroll the pixel to scroll
-	 */
-	public void scrollUp(final WebDriver driver, Integer pixelToScroll) {
-		pixelToScroll = pixelToScroll == 0 ? 250 : pixelToScroll;
-		final JavascriptExecutor js = (JavascriptExecutor) driver;
-		js.executeScript("scrollBy(0, -" + StringUtils.strip(pixelToScroll.toString()) + ");");
-	}
+	public void closeCurrentWindowAndSwitchToParentWindow() {
+        driver.close();
+        driver.switchTo().window(windowHandles.pop());
+    }
 
 	/**
 	 * Focus element.
@@ -258,27 +102,6 @@ public class DriverUtils {
 	public void focusElement(final String elementId) {
 		final JavascriptExecutor jsExec = (JavascriptExecutor) driver;
 		jsExec.executeScript("document.getElementById('" + elementId + "').focus()");
-	}
-
-	/**
-	 * This method could be used only browser based, not for head-less browsers If
-	 * the timeOut Exceeds, this method will make your test case to fail.
-	 * 
-	 * @param timeOutInSecs the time out in secs
-	 */
-	public void waitForPageToLoad(final long timeOutInSecs) {
-		final ExpectedCondition<Boolean> expectation = driver -> {
-			assert driver != null;
-			return ((JavascriptExecutor) driver).executeScript("return document.readyState").equals("complete");
-		};
-		final Wait<WebDriver> wait = new WebDriverWait(driver, timeOutInSecs);
-		try {
-			wait.until(expectation);
-		} catch (final Throwable error) {
-			delay(2000);
-			log.warn(error.getMessage());
-			log.error("Waiting for Page Load Request to complete is failed.");
-		}
 	}
 
 	public void forceClickElement(By by) {
@@ -318,6 +141,71 @@ public class DriverUtils {
 		} while (!isClicked);
 	}
 
+	public String getBrowserType() {
+		return browserType;
+	}
+
+	public WebDriver getDriver() {
+		return driver;
+	}
+
+	public String getRandomResourceImageFile() {
+		Random random = new Random();
+		int picNumber = random.nextInt(18);
+		String imageVideo = String.format("media/pic%s.jpeg", picNumber);
+		URL url = Resources.getResource(imageVideo);
+		log.info("url.getPath():{}", url.getPath());
+		return url.getPath();
+	}
+
+	public String getScreenShotFileName(String methodName) {
+		return getScreenShotFileName("", methodName);
+	}
+
+	/**
+	 * Gets screen shot file name.
+	 *
+	 * @param className  the class name
+	 * @param methodName the method name
+	 * @return the screen shot file name
+	 */
+// This method creates a file name with the following format
+	// ScreenShot/Date/time_classname_testname.png
+	// ScreenShot is a folder
+	// Date is a folder
+	// time_classname_testname.png is a file
+	// Date format is yyyyMMdd
+	// time format is HHmmssSSS
+	// className and methodName special characters ".][" are replaced with "_"
+	public String getScreenShotFileName(String className, String methodName) {
+		DateFormat dateFormat2 = new SimpleDateFormat("yyyyMMdd");
+		DateFormat dateFormat1 = new SimpleDateFormat("HHmmssSSS");
+		String now = dateFormat1.format(new Date());
+		String today = dateFormat2.format(new Date());
+		String fileName;
+		System.out.println("Method Name:" + methodName);
+		System.out.println("Class Name:" + className);
+		if (methodName != null && className != null)
+			fileName = className + "." + methodName;
+		else if (className != null)
+			fileName = className;
+		else
+			fileName = methodName;
+		fileName = "target/Screenshots/" + today + "/" + now + '_' + browserType + '_'
+				+ fileName.replaceAll("[.\\[\\]]", "_") + ".png";
+		System.out.println("name:" + fileName);
+		return fileName;
+	}
+
+	public boolean isElementPresent(By by) {
+		try {
+			driver.findElement(by);
+			return true;
+		} catch (NoSuchElementException e) {
+			return false;
+		}
+	}
+
 	/**
 	 * Checks if text present.
 	 *
@@ -331,6 +219,142 @@ public class DriverUtils {
 			return false;
 		}
 	}
+
+	public void moveToElement(final WebElement element) {
+		try {
+			Actions actions = new Actions(driver);
+			actions.moveToElement(element).build().perform();
+			delay(500);
+		} catch (MoveTargetOutOfBoundsException ex) {
+			log.warn(ex.getMessage());
+			log.error("Moving out of bound");
+		}
+	}
+
+	/**
+	 * Save screen shot to byte [ ].
+	 *
+	 * @param screenShotFileName the screen shotfile name
+	 * @return the byte [ ]
+	 */
+	public byte[] saveScreenShotTo(String screenShotFileName) {
+		log.info("saveScreenShotTo({})",screenShotFileName);
+		if (browserType.equalsIgnoreCase("htmlunit"))
+			return new byte[0];
+		try {
+			return writeScreenShot(screenShotFileName);
+		} catch (Exception ex) {
+			log.warn(ex.getMessage());
+		}
+		return new byte[0];
+	}
+
+	/**
+	 * Scroll down.
+	 *
+	 * @param pixelToScroll the pixel to scroll
+	 */
+	public void scrollDown(final int pixelToScroll) {
+		final int detPixelToScroll = pixelToScroll == 0 ? 250 : pixelToScroll;
+		final JavascriptExecutor jsExec = (JavascriptExecutor) driver;
+		jsExec.executeScript("scrollBy(0, " + detPixelToScroll + ");");
+		delay(1000);
+	}
+
+	/**
+	 * Scroll Horizontal Left Direction.
+	 */
+	public void scrollHorizontalLeft() {
+		final int pixelToScroll = -2000;
+		final JavascriptExecutor jsExec = (JavascriptExecutor) driver;
+		jsExec.executeScript("scroll(" + pixelToScroll + ", 0);");
+	}
+
+	/**
+	 * Scroll Horizontal Right Direction.
+	 */
+	public void scrollHorizontalRight() {
+		final int pixelToScroll = 2000;
+		final JavascriptExecutor jsExec = (JavascriptExecutor) driver;
+		jsExec.executeScript("scroll(" + pixelToScroll + ", 0);");
+	}
+
+	/**
+	 * Scroll into view.
+	 *
+	 * @param byMethod the byMethod
+	 */
+	public void scrollIntoView(final By byMethod) {
+		final WebElement element = driver.findElement(byMethod);
+		((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", element);
+		delay(500);
+	}
+
+	public void scrollIntoView(final WebElement element) {
+		((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", element);
+		delay(500);
+	}
+
+	/**
+	 * Scroll into view. viewStatus - accepted values : true, false
+	 *
+	 * @param element    the element
+	 * @param viewStatus the view status
+	 */
+	public void scrollIntoView(final WebElement element, final String viewStatus) {
+		((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(" + viewStatus + ");", element);
+		delay(500);
+	}
+
+	/**
+	 * Scroll to bottom of page.
+	 */
+	public void scrollToBottomOfPage() {
+		final JavascriptExecutor jsExec = (JavascriptExecutor) driver;
+		jsExec.executeScript("window.scrollTo(0, document.body.scrollHeight);");
+	}
+
+	/**
+	 * Scroll to page top.
+	 */
+	public void scrollToPageTop() {
+		final JavascriptExecutor js = (JavascriptExecutor) driver;
+		js.executeScript("window.scrollTo(0, 0);");
+		delay(1000);
+	}
+
+	/**
+	 * Scroll up.
+	 *
+	 * @param driver        the driver
+	 * @param pixelToScroll the pixel to scroll
+	 */
+	public void scrollUp(final WebDriver driver, Integer pixelToScroll) {
+		pixelToScroll = pixelToScroll == 0 ? 250 : pixelToScroll;
+		final JavascriptExecutor js = (JavascriptExecutor) driver;
+		js.executeScript("scrollBy(0, -" + StringUtils.strip(pixelToScroll.toString()) + ");");
+	}
+
+	public DriverUtils setBrowserType(String browserType) {
+		this.browserType = browserType;
+		return this;
+	}
+
+	public DriverUtils setDriver(WebDriver driver) {
+		this.driver = driver;
+		return this;
+	}
+
+	public void switchToNewWindow() {
+        String curWin = driver.getWindowHandle();
+        for (String handle : driver.getWindowHandles()) {
+            if (!handle.equals(curWin) && !windowHandles.contains(curWin)) {
+                windowHandles.push(curWin);
+                driver.switchTo().window(handle);
+                break;
+            }
+        }
+    }
 
 	/**
 	 * Switch to new window return win handle before.
@@ -349,75 +373,55 @@ public class DriverUtils {
 		return winHandleBefore;
 	}
 
+	/**
+	 * This method could be used only browser based, not for head-less browsers If
+	 * the timeOut Exceeds, this method will make your test case to fail.
+	 * 
+	 * @param timeOutInSecs the time out in secs
+	 */
+	public void waitForPageToLoad(final long timeOutInSecs) {
+		final ExpectedCondition<Boolean> expectation = driver -> {
+			assert driver != null;
+			return ((JavascriptExecutor) driver).executeScript("return document.readyState").equals("complete");
+		};
+		final Wait<WebDriver> wait = new WebDriverWait(driver, timeOutInSecs);
+		try {
+			wait.until(expectation);
+		} catch (final Throwable error) {
+			delay(2000);
+			log.warn(error.getMessage());
+			log.error("Waiting for Page Load Request to complete is failed.");
+		}
+	}
+
 	public void waitForTitleContains(String title) {
 		WebDriverWait wait = new WebDriverWait(driver, 30);
 		wait.until(ExpectedConditions.titleContains(title));
 		delay(3000);
 	}
+	
+    private byte[] writeScreenShot(String screenShotFileName) throws IOException {
+		System.out.println("writeScreenShot: " + screenShotFileName);
+		File tempScrShotFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+		FileUtils.copyFile(tempScrShotFile, new File(screenShotFileName));
+		return ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
+	}
+    
+    public static void delay(long ms) {
+		try {
+			Thread.sleep(ms);
+		} catch (InterruptedException ex) {
+			log.warn(ex.getMessage());
+		}
+	}
 
-	public static String getUniqueId() {
+    public static String getUniqueId() {
 		DateFormat dateFormat2 = new SimpleDateFormat("yyyyMMdd");
 		DateFormat dateFormat1 = new SimpleDateFormat("HHmmssSSS");
 		String now = dateFormat1.format(new Date());
 		String today = dateFormat2.format(new Date());
 		return today + "_" + now;
 	}
-
-	public String getRandomResourceImageFile() {
-		Random random = new Random();
-		int picNumber = random.nextInt(18);
-		String imageVideo = String.format("media/pic%s.jpeg", picNumber);
-		URL url = Resources.getResource(imageVideo);
-		log.info("url.getPath():{}", url.getPath());
-		return url.getPath();
-	}
-
-	public boolean isElementPresent(By by) {
-		try {
-			driver.findElement(by);
-			return true;
-		} catch (NoSuchElementException e) {
-			return false;
-		}
-	}
-	
-    /**
-     * Close alert and get its text.
-     *
-     * @param acceptNextAlert the accept next alert
-     * @return the string
-     */
-    public String closeAlertAndGetItsText(final boolean acceptNextAlert) {
-        try {
-            final Alert alert = driver.switchTo().alert();
-            final String alertText = alert.getText();
-            if (acceptNextAlert) {
-                alert.accept();
-            } else {
-                alert.dismiss();
-            }
-            return alertText;
-        } catch (final Exception ex) {
-            log.warn("Alert Not found!!!");
-            return null;
-        }
-    }
-    
-    public void closeCurrentWindowAndSwitchToParentWindow() {
-        driver.close();
-        driver.switchTo().window(windowHandles.pop());
-    }
-
-    public void switchToNewWindow() {
-        String curWin = driver.getWindowHandle();
-        for (String handle : driver.getWindowHandles()) {
-            if (!handle.equals(curWin) && !windowHandles.contains(curWin)) {
-                windowHandles.push(curWin);
-                driver.switchTo().window(handle);
-                break;
-            }
-        }
-    }
 
 
 }

@@ -4,5 +4,5 @@ Feature: Getting Text
     Check text of any element
 
     Scenario: Fetch text from a web element
-        When I go to "https://kavinschool.com/playground/DemoInputs.html"
+        Given I go to "https://kavinschool.com/playground/DemoInputs.html"
         Then First H2 Element should match with "Provide Your Details:"
