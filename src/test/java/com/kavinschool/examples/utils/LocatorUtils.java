@@ -4,6 +4,8 @@
  */
 package com.kavinschool.examples.utils;
 
+import java.lang.invoke.MethodHandles;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -11,8 +13,6 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.lang.invoke.MethodHandles;
 
 public class LocatorUtils {
 	private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -453,10 +453,45 @@ public class LocatorUtils {
 		return driver.findElement(By.xpath(locator));
 	}
 	
+	public WebElement waitForSpanWithText(final String text) {
+		return waitForSpanWithText(text,"");
+	}
+	
+	public WebElement waitForSpanContainsText(final String text, final String prefixLocator) {
+		String locator = this.getLocatorContainsText(text, "span",prefixLocator);
+		WebDriverWait wait = new WebDriverWait(driver, WAIT_TIME);
+		wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.xpath(locator))));
+		return driver.findElement(By.xpath(locator));
+	}
+	
+	public WebElement waitForSpanContainsText(final String text) {
+		return waitForSpanContainsText(text,"");
+	}
+	
 	public WebElement waitForText(final String text) {
 		String locator = getLocator(text, "*", "");
 		WebDriverWait wait = new WebDriverWait(driver, WAIT_TIME);
 		wait.until(ExpectedConditions.textToBePresentInElement(driver.findElement(By.xpath(locator)), text));
 		return driver.findElement(By.xpath(locator));
+	}
+	
+	public WebElement waitForTextContains(final String text, final String tagName, final String prefixLocator) {
+		String locator = getLocatorContainsText(text, tagName, prefixLocator);
+		log.info("locator:{}",locator);
+		WebDriverWait wait = new WebDriverWait(driver, 10);
+		wait.until(ExpectedConditions.textToBePresentInElement(driver.findElement(By.xpath(locator)), text));
+		return driver.findElement(By.xpath(locator));
+	}
+	
+	public WebElement waitForBoldTextContains(final String text, final String prefixLocator) {
+		String locator = getLocatorContainsText(text, "b", prefixLocator);
+		log.info("locator:{}",locator);
+		WebDriverWait wait = new WebDriverWait(driver, 10);
+		wait.until(ExpectedConditions.textToBePresentInElement(driver.findElement(By.xpath(locator)), text));
+		return driver.findElement(By.xpath(locator));
+	}
+	
+	public WebElement waitForTextContains(final String text) {
+		return waitForTextContains(text,"*","");
 	}
 }

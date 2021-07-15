@@ -303,7 +303,7 @@ public class DriverFactory {
 			driver.manage().window().maximize();
 		}
 
-		driver.manage().timeouts().implicitlyWait(60, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
 		return driver;
 	}
 
@@ -346,7 +346,7 @@ public class DriverFactory {
 			driver.manage().window().maximize();
 		}
 
-		driver.manage().timeouts().implicitlyWait(60, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
 		return driver;
 	}
 

@@ -32,7 +32,6 @@ import org.slf4j.LoggerFactory;
 public class WaitUtils {
 	private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-
 	/** The Constant PICO_WAIT. */
 	public static final int PICO_WAIT = 100;
 
@@ -200,7 +199,7 @@ public class WaitUtils {
 	 * @return the alert
 	 */
 	public Alert waitForAlertPresent(final long timeoutInSeconds) {
-		log.info("waitForAlertPresent({})",timeoutInSeconds);
+		log.info("waitForAlertPresent({})", timeoutInSeconds);
 		final WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
 		return wait.until(ExpectedConditions.alertIsPresent());
 	}
@@ -229,7 +228,6 @@ public class WaitUtils {
 		final WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
 		return wait.until(ExpectedConditions.elementSelectionStateToBe(webBy, selected));
 	}
-
 
 	/**
 	 * Wait for element selection state to be.
@@ -307,7 +305,6 @@ public class WaitUtils {
 		return wait.until(ExpectedConditions.elementToBeSelected(webBy));
 	}
 
-
 	/**
 	 * Wait for element to be selected.
 	 *
@@ -380,7 +377,6 @@ public class WaitUtils {
 		return wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(frameLocator));
 	}
 
-
 	/**
 	 * Wait till page to load completely includes JScript & Jquery.
 	 *
@@ -415,7 +411,6 @@ public class WaitUtils {
 		}
 
 	}
-
 
 	/**
 	 * Gets all the images in a URL if the images did not get loaded properly it
@@ -473,7 +468,6 @@ public class WaitUtils {
 		return wait.until(ExpectedConditions.invisibilityOfElementLocated(webBy));
 	}
 
-
 	/**
 	 * Wait for invisibility of element with text.
 	 *
@@ -500,7 +494,6 @@ public class WaitUtils {
 		final WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
 		return wait.until(ExpectedConditions.invisibilityOfElementWithText(webBy, text));
 	}
-
 
 	/**
 	 * Wait for presence of all elements located webBy.
@@ -548,8 +541,6 @@ public class WaitUtils {
 				.until(ExpectedConditions.presenceOfElementLocated(webBy));
 	}
 
-
-
 	/**
 	 * Wait for text.
 	 *
@@ -574,7 +565,6 @@ public class WaitUtils {
 			delay(Integer.parseInt(WaitUtils.DEFAULT_POLLING_TIME_REPEAT) * 1000);
 		}
 	}
-
 
 	/**
 	 * Wait for text to be present in element. Note: An expectation for checking if
@@ -639,7 +629,6 @@ public class WaitUtils {
 		wait.until(ExpectedConditions.titleIs(pageTitle));
 	}
 
-
 	/**
 	 * Wait for title contains.
 	 *
@@ -659,7 +648,6 @@ public class WaitUtils {
 		final WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
 		wait.until(ExpectedConditions.titleContains(pageTitle));
 	}
-
 
 	/**
 	 * Wait fort text to be present in element value.
@@ -1023,8 +1011,7 @@ public class WaitUtils {
 	 * @param timeoutSeconds the timeout seconds
 	 * @throws InterruptedException the interrupted exception
 	 */
-	public void waitChangingOfUrl(final String keyword, final int timeoutSeconds)
-			throws InterruptedException {
+	public void waitChangingOfUrl(final String keyword, final int timeoutSeconds) throws InterruptedException {
 		int i = 0;
 		while (!driver.getCurrentUrl().contains(keyword) && i < timeoutSeconds) {
 			Thread.sleep(1000);
